@@ -1,2 +1,2 @@
-# Bus Finder
+# Bus Finder 🚌
 Distributed Systems University Project
