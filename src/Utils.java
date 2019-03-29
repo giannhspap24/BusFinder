@@ -49,7 +49,7 @@ public class Utils
         return current_ip;
     }
 
-    public static ArrayList<String[]> getTopicList(ArrayList<Broker> bl)
+    public static ArrayList<ArrayList<String[]>> getTopicList(ArrayList<Broker> bl)
     {
         ArrayList<String[]> buses_md5 = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
@@ -64,16 +64,20 @@ public class Utils
             e.printStackTrace();
         }
 
-        for(String[] hash: buses_md5)
+        ArrayList<ArrayList<String[]>> brokerTopics = new ArrayList<>(bl.size());
+        int counter = 0;
+        for(Broker b: bl)
         {
-            for(Broker b: bl)
+            brokerTopics.add(new ArrayList<String[]>());
+            for(String[] hash: buses_md5)
             {
                 if(hash[1].compareTo(b.ipHash) < 0)
                 {
-                    System.out.println("Topic " + hash[0] + " goes to broker " + b.id);
+                    brokerTopics.get(counter).add(hash);
                 }
             }
+            counter++;
         }
-        return buses_md5;
+        return brokerTopics;
     }
 }

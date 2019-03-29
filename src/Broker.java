@@ -1,5 +1,3 @@
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.TopLevelAttribute;
-
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -13,12 +11,14 @@ public class Broker extends Node
     public ArrayList<Publisher> registeredPubs;
     public ArrayList<String[]> myTopics;
 
+    private boolean gotTopics = false;
+
     //Normal Constructor
-    public Broker(String IP, String port, String id)
+    public Broker(String IP, int port, String id)
     {
         this.ipHash = Utils.getMd5(IP + port);
         this.IP = IP;
-        this.port = Integer.parseInt(port);
+        this.port = port;
         this.id =Integer.parseInt(id);
         this.brokers = new ArrayList<Broker>();
         this.registeredSubs = new ArrayList<Subscriber>();
@@ -40,13 +40,21 @@ public class Broker extends Node
         String ans = "n";
         do
         {
-            System.out.print("Start sharing topics? (y)\n> ");
-            ans = in.nextLine();
-        }while(!ans.equals("y"));
-        Utils.getTopicList(brokers);
-        for(Broker bl: brokers)
+            if(!gotTopics)
+            {
+                System.out.print("Start sharing topics? (y)\n> ");
+                ans = in.nextLine();
+            }
+        }while(!ans.toLowerCase().equals("y"));
+        gotTopics = false;
+        if(ans.toLowerCase().equals("y"))
         {
-            updateNode(null, bl.IP, bl.port, "add_topics_list");
+            ArrayList<ArrayList<String[]>> topics = Utils.getTopicList(brokers);
+            int counter = 0;
+            for (Broker bl : brokers)
+            {
+                updateNode(topics.get(counter), bl.IP, bl.port, "add_topics_list");
+            }
         }
     }
 
@@ -64,22 +72,21 @@ public class Broker extends Node
 
     public static void main(String[] args)
     {
-        new Broker(Utils.getSystemIP(), "8080", args[0]);
-
+        new Broker(Utils.getSystemIP(), 8080, args[0]);
     }
 
     //Parallel Server
     public void run()
     {
         ServerSocket providerSocket = null;
-        Socket connection = null;
         try
         {
             providerSocket = new ServerSocket(port);
-            while (true) {
-                connection = providerSocket.accept();
-                ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(connection.getInputStream());
+            while (true)
+            {
+                Socket requestSocket = providerSocket.accept();
+                ObjectOutputStream out = new ObjectOutputStream(requestSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(requestSocket.getInputStream());
 
                 String sendtext = in.readUTF();
                 if (sendtext.equals("add_me"))
@@ -132,9 +139,19 @@ public class Broker extends Node
                         }
                     }
                 }
+                else if(sendtext.equals("add_topics_list"))
+                {
+                    System.out.println("Got Topics");
+                    gotTopics = true;
+                    myTopics = (ArrayList<String[]>) in.readObject();
+                    for(String[] s : myTopics)
+                    {
+                        System.out.println(s[0]);
+                    }
+                }
                 in.close();
                 out.close();
-                connection.close();
+                requestSocket.close();
             }
 
         } catch (IOException ioException) {
@@ -155,7 +172,7 @@ public class Broker extends Node
 
     }
 
-    private static void updateNode(Object b, String broker_ip, int broker_port, String text)
+    private void updateNode(Object b, String broker_ip, int broker_port, String text)
     {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
