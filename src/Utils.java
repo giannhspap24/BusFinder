@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -5,6 +8,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Utils
 {
@@ -42,5 +47,33 @@ public class Utils
             e.printStackTrace();
         }
         return current_ip;
+    }
+
+    public static ArrayList<String[]> getTopicList(ArrayList<Broker> bl)
+    {
+        ArrayList<String[]> buses_md5 = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                String[] values = line.split(",");
+                buses_md5.add(new String[]{values[0], Utils.getMd5(values[1])});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(String[] hash: buses_md5)
+        {
+            for(Broker b: bl)
+            {
+                if(hash[1].compareTo(b.ipHash) < 0)
+                {
+                    System.out.println("Topic " + hash[0] + " goes to broker " + b.id);
+                }
+            }
+        }
+        return buses_md5;
     }
 }
