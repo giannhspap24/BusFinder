@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -13,23 +14,6 @@ import java.util.Collections;
 
 public class Utils
 {
-    public static String getMd5(String input)
-    {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger no = new BigInteger(1, messageDigest);
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static String getSystemIP()
     {
         String current_ip = null;
@@ -49,35 +33,83 @@ public class Utils
         return current_ip;
     }
 
-    public static ArrayList<ArrayList<String[]>> getTopicList(ArrayList<Broker> bl)
+    public static ArrayList<ArrayList<int[]>> getTopicList(ArrayList<Broker> bl)
     {
-        ArrayList<String[]> buses_md5 = new ArrayList<>();
+        ArrayList<int[]> buses_md5 = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
         {
             String line;
             while ((line = br.readLine()) != null)
             {
                 String[] values = line.split(",");
-                buses_md5.add(new String[]{values[0], Utils.getMd5(values[1])});
+                buses_md5.add(new int[]{Integer.parseInt(values[0]), values[1].hashCode() % bl.get(bl.size()-1).ipHash});
+
+                System.out.println(buses_md5.get(buses_md5.size()-1)[1]);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        ArrayList<ArrayList<String[]>> brokerTopics = new ArrayList<>(bl.size());
+        ArrayList<ArrayList<int[]>> brokerTopics = new ArrayList<>(bl.size());
         int counter = 0;
         for(Broker b: bl)
         {
-            brokerTopics.add(new ArrayList<String[]>());
-            for(String[] hash: buses_md5)
+            brokerTopics.add(new ArrayList<>());
+            for(int i = 0; i < buses_md5.size(); i++)
             {
-                if(hash[1].compareTo(b.ipHash) < 0)
+                if(buses_md5.get(i)[1] < b.ipHash)
                 {
-                    brokerTopics.get(counter).add(hash);
+                    brokerTopics.get(counter).add(buses_md5.get(i));
+                    buses_md5.remove(i);
                 }
             }
             counter++;
         }
         return brokerTopics;
     }
+
+    public static ArrayList<Broker> getDumpTopic(ArrayList<Broker> brokers) {
+
+        ArrayList<int[]> buses_md5 = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                String[] values = line.split(",");
+
+                buses_md5.add(new int[]{Integer.parseInt(values[0]), values[1].hashCode() % brokers.get(brokers.size()-1).ipHash});
+
+                System.out.println(buses_md5.get(buses_md5.size()-1)[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int broker1_hash = brokers.get(0).ipHash;
+        int broker2_hash = brokers.get(1).ipHash;
+
+
+        for (int[] bus : buses_md5) {
+
+            if (bus[1] <= broker1_hash)
+            {
+                brokers.get(0).myTopics.add(bus);
+            }
+            else if (bus[1] <= broker2_hash)
+            {
+                brokers.get(1).myTopics.add(bus);
+            }
+            else
+            {
+                brokers.get(2).myTopics.add(bus);
+            }
+
+        }
+
+
+
+        return brokers;
+    }
+
 }

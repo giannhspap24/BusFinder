@@ -1,6 +1,9 @@
+import sun.plugin2.message.Conversation;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -16,14 +19,14 @@ public class Subscriber extends Node
         this.subscriberID = subscriberID;
     }
 
-    public static void register(String ip, String port, String topic, Subscriber s) {
+    public static void register(String ip, int port, int topic, Subscriber s) {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
         String broker_ip = "";
         try
         {
-            requestSocket = new Socket(InetAddress.getByName(ip),Integer.parseInt(port));
+            requestSocket = new Socket(InetAddress.getByName(ip),port);
             out = new ObjectOutputStream(requestSocket.getOutputStream());
             in = new ObjectInputStream(requestSocket.getInputStream());
 
@@ -31,27 +34,54 @@ public class Subscriber extends Node
             out.flush();
 
             out.reset();
-            out.writeUTF(topic);
+            out.writeInt(topic);
             out.flush();
+
+            out.reset();
+            out.writeUnshared(s);
+            out.flush();
+
 
             String returned = in.readUTF();
 
             if (returned.equals("bus_is_here"))
             {
                 System.out.println("This broker has your data.");
-                out.reset();
-                out.writeUnshared(s);
 
+
+
+
+                System.out.println("Bus position: 0,0");
+
+                return;
             }
-            else if (returned.equals("bus_is_not_here"))
+            else if (returned.equals("bus_not_here"))
             {
-                broker_ip = in.readUTF();
-                System.out.println(broker_ip + " has your data.");
+
+                ArrayList<Broker> brokers = (ArrayList<Broker>) in.readObject();
+
+                for(Broker b: brokers)
+                {
+                    System.out.println("reached");
+                    if( b.containsTopic(topic) ) {
+                        System.out.println(b.IP + " has your data.");
+                        register(b.IP, b.port,topic,s);
+                        return;
+                    }
+                }
+                System.out.println("Line not found");
+
+
+
+
+                return;
             }
         } catch (UnknownHostException unknownHost) {
             System.err.println("You are trying to connect to an unknown host!");
         } catch (IOException ioException) {
             ioException.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } finally {
             try {
                 in.close();
@@ -61,9 +91,6 @@ public class Subscriber extends Node
                 ioException.printStackTrace();
             }
         }
-
-        register(broker_ip, port,topic,s);
-
     }
 
 
@@ -73,13 +100,13 @@ public class Subscriber extends Node
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter bus line\n> ");
-        String busLine = in.nextLine();
+        int busLine = in.nextLine().hashCode();
 
-        System.out.println("Enter broker's IP\n> ");
+        System.out.print("Enter broker's IP\n> ");
         String brokerIP = in.nextLine();
 
-        System.out.println("Enter broker's port\n> ");
-        String brokerPort = in.nextLine();
+        System.out.print("Enter broker's port\n> ");
+        int brokerPort = in.nextInt();
 
 
         Subscriber s = new Subscriber(args[0]);

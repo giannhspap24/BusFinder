@@ -5,18 +5,18 @@ import java.util.Scanner;
 
 public class Broker extends Node
 {
-    public String ipHash, IP;
-    public int id, port;
+    public String IP;
+    public int id, port, ipHash;
     public ArrayList<Subscriber> registeredSubs;
     public ArrayList<Publisher> registeredPubs;
-    public ArrayList<String[]> myTopics;
+    public ArrayList<int[]> myTopics;
 
     private boolean gotTopics = false;
 
     //Normal Constructor
     public Broker(String IP, int port, String id)
     {
-        this.ipHash = Utils.getMd5(IP + port);
+        this.ipHash = (IP + port).hashCode();
         this.IP = IP;
         this.port = port;
         this.id =Integer.parseInt(id);
@@ -30,6 +30,8 @@ public class Broker extends Node
         {
             System.out.println("You are initializing the app for the first time.");
             System.out.println("Use this ip to help other brokers connect: " + Utils.getSystemIP());
+
+            sendLines();
         }
         else
         {
@@ -49,11 +51,12 @@ public class Broker extends Node
         gotTopics = false;
         if(ans.toLowerCase().equals("y"))
         {
-            ArrayList<ArrayList<String[]>> topics = Utils.getTopicList(brokers);
+            ArrayList<ArrayList<int[]>> topics = Utils.getTopicList(brokers);
             int counter = 0;
             for (Broker bl : brokers)
             {
                 updateNode(topics.get(counter), bl.IP, bl.port, "add_topics_list");
+                counter++;
             }
         }
     }
@@ -70,10 +73,97 @@ public class Broker extends Node
         this.registeredPubs = b.registeredPubs;
     }
 
+    public boolean containsTopic(int topic) {
+
+        if (myTopics.size() == 0) return false;
+
+        for (int[] top : myTopics) {
+            if (top[1] == topic) return true;
+        }
+
+        return false;
+    }
+
     public static void main(String[] args)
     {
         new Broker(Utils.getSystemIP(), 8080, args[0]);
     }
+
+    public void sendLines()
+    {
+        ArrayList<BusLine> busLines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                String[] values = line.split(",");
+                busLines.add(new BusLine(values[1]));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Scanner in = new Scanner(System.in);
+
+        ArrayList<String> publishers_count = new ArrayList<>();
+
+        System.out.print("Enter number of publishers\n> ");
+        int c = in.nextInt();
+
+        for (int i=0; i<c; i++) {
+            System.out.print("Enter publisher " + (i+1)+ " IP\n> ");
+            String inpt = in.nextLine();
+            publishers_count.add(inpt);
+        }
+
+        int counter=0;
+        int step = busLines.size()/c;
+        for (String _ip : publishers_count) {
+
+            ArrayList<BusLine> sendlist;
+            if (counter == c-1)
+            {
+                sendlist = (ArrayList<BusLine>) busLines.subList(counter * step, busLines.size()-1);
+            }
+            else {
+                sendlist = (ArrayList<BusLine>) busLines.subList(counter * step, (counter+1)*step-1);
+            }
+
+            updateNode(sendlist, _ip, 8080, "add_lines");
+            counter++;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
 
     //Parallel Server
     public void run()
@@ -92,10 +182,19 @@ public class Broker extends Node
                 if (sendtext.equals("add_me"))
                 {
                     System.out.println("add me");
-                    System.out.printf(this.IP);
                     Broker b2 = (Broker) in.readObject();
-                    System.out.println(b2.IP);
-                    brokers.add(b2);
+                    for(int i = 0; i < brokers.size(); i++)
+                    {
+                        if(b2.ipHash < brokers.get(i).ipHash)
+                        {
+                            brokers.add(i, b2);
+                            break;
+                        }
+                    }
+                    for(Broker test: brokers)
+                    {
+                        System.out.println(test.ipHash);
+                    }
                     for (Broker b : brokers)
                     {
                         if (b.IP != this.IP)
@@ -116,35 +215,42 @@ public class Broker extends Node
                 }
                 else if (sendtext.equals("i_want_bus"))
                 {
-                    String topic = (String) in.readUTF();
-                    String topicMD5 = Utils.getMd5(topic);
-                    if (topicMD5.compareTo(this.ipHash) < 0)
+                    int topic =  in.readInt();
+                    Subscriber s = (Subscriber) in.readObject();
+
+                    if (true)//containsTopic(topic))
                     {
-                        out.writeUTF("bus_is_here");
-                        Subscriber s = (Subscriber) in.readObject();
-                        if(registeredPubs.contains(s))
+                        if(registeredSubs.isEmpty() || !registeredSubs.contains(s))
                         {
-                            registeredSubs.add((Subscriber) in.readObject());
+                            registeredSubs.add(s);
                         }
+//
+//                        for (Subscriber rb : registeredSubs) {
+//                            System.out.println(rb.subscriberID);
+//                        }
+                        out.reset();
+                        out.writeUTF("bus_is_here");
+                        out.flush();
                         pull(topic);
                     }
-                    else {
-                        for (Broker b : brokers)
-                        {
-                            if (topic.compareTo(b.ipHash) < 0)
-                            {
-                                out.writeUTF("bus_is_not_here");
-                                out.writeUTF(b.IP);
-                            }
-                        }
+                    else
+                    {
+                        out.reset();
+                        out.writeUTF("bus_not_here");
+                        out.flush();
+
+                        out.reset();
+                        out.writeUnshared(brokers);
+                        out.flush();
+
                     }
                 }
                 else if(sendtext.equals("add_topics_list"))
                 {
                     System.out.println("Got Topics");
                     gotTopics = true;
-                    myTopics = (ArrayList<String[]>) in.readObject();
-                    for(String[] s : myTopics)
+                    myTopics = (ArrayList<int[]>) in.readObject();
+                    for(int[] s : myTopics)
                     {
                         System.out.println(s[0]);
                     }
@@ -167,8 +273,9 @@ public class Broker extends Node
         }
     }
 
-    public  static void pull(String topic)
+    public  static void pull(int topic)
     {
+
 
     }
 
