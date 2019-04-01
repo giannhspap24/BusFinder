@@ -14,6 +14,29 @@ import java.util.Collections;
 
 public class Utils
 {
+
+    public static int getMd5(String input)
+    {
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32)
+            {
+                hashtext = "0" + hashtext;
+            }
+            int md5Dec = Integer.parseInt(hashtext.substring(0, 5), 16);
+            return md5Dec;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static String getSystemIP()
     {
         String current_ip = null;
@@ -33,7 +56,7 @@ public class Utils
         return current_ip;
     }
 
-    public static ArrayList<ArrayList<int[]>> getTopicList(ArrayList<Broker> bl)
+    public static ArrayList<Broker> getTopicList(ArrayList<Broker> bl)
     {
         ArrayList<int[]> buses_md5 = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
@@ -42,30 +65,29 @@ public class Utils
             while ((line = br.readLine()) != null)
             {
                 String[] values = line.split(",");
-                buses_md5.add(new int[]{Integer.parseInt(values[0]), values[1].hashCode() % bl.get(bl.size()-1).ipHash});
 
-                System.out.println(buses_md5.get(buses_md5.size()-1)[1]);
+                buses_md5.add(new int[]{Integer.parseInt(values[0]), getMd5(values[1]) % bl.get(bl.size()-1).ipHash});
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
         ArrayList<ArrayList<int[]>> brokerTopics = new ArrayList<>(bl.size());
-        int counter = 0;
         for(Broker b: bl)
         {
             brokerTopics.add(new ArrayList<>());
+            System.out.println(b.ipHash);
             for(int i = 0; i < buses_md5.size(); i++)
             {
                 if(buses_md5.get(i)[1] < b.ipHash)
                 {
-                    brokerTopics.get(counter).add(buses_md5.get(i));
+                    b.myTopics.add(buses_md5.get(i));
                     buses_md5.remove(i);
                 }
             }
-            counter++;
         }
-        return brokerTopics;
+        return bl;
     }
 
     public static ArrayList<Broker> getDumpTopic(ArrayList<Broker> brokers) {

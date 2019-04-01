@@ -16,12 +16,13 @@ public class Broker extends Node
     //Normal Constructor
     public Broker(String IP, int port, String id)
     {
-        this.ipHash = (IP + port).hashCode();
+        this.ipHash = Utils.getMd5(IP + port);
         this.IP = IP;
         this.port = port;
         this.id =Integer.parseInt(id);
-        this.brokers = new ArrayList<Broker>();
-        this.registeredSubs = new ArrayList<Subscriber>();
+        this.brokers = new ArrayList<>();
+        this.registeredSubs = new ArrayList<>();
+        this.myTopics = new ArrayList<>();
 
         Scanner in = new Scanner(System.in);
         brokers.add(this);
@@ -31,7 +32,7 @@ public class Broker extends Node
             System.out.println("You are initializing the app for the first time.");
             System.out.println("Use this ip to help other brokers connect: " + Utils.getSystemIP());
 
-            sendLines();
+//            sendLines();
         }
         else
         {
@@ -51,12 +52,10 @@ public class Broker extends Node
         gotTopics = false;
         if(ans.toLowerCase().equals("y"))
         {
-            ArrayList<ArrayList<int[]>> topics = Utils.getTopicList(brokers);
-            int counter = 0;
-            for (Broker bl : brokers)
+            ArrayList<Broker> topics = Utils.getTopicList(brokers);
+            for (Broker bl : topics)
             {
-                updateNode(topics.get(counter), bl.IP, bl.port, "add_topics_list");
-                counter++;
+                updateNode(bl.myTopics, bl.IP, bl.port, "add_topics_list");
             }
         }
     }

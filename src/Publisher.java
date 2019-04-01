@@ -36,12 +36,12 @@ public class Publisher extends Node {
                 String sendtext = in.readUTF();
                 if (sendtext.equals("add_lines")) {
                     lines = (ArrayList<BusLine>) in.readObject();
-                } else if (sendtext.equals("get_positions")) {
+                }
+                else if (sendtext.equals("get_positions"))
+                {
                     String topic = in.readUTF();
 
                     //find topic in database
-
-
                 }
 
 
