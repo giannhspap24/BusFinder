@@ -1,12 +1,7 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -14,7 +9,6 @@ import java.util.Collections;
 
 public class Utils
 {
-
     public static int getMd5(String input)
     {
         try
@@ -58,20 +52,8 @@ public class Utils
 
     public static ArrayList<Broker> getTopicList(ArrayList<Broker> bl)
     {
-        ArrayList<int[]> buses_md5 = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
-        {
-            String line;
-            while ((line = br.readLine()) != null)
-            {
-                String[] values = line.split(",");
-
-                buses_md5.add(new int[]{Integer.parseInt(values[0]), getMd5(values[1]) % bl.get(bl.size()-1).ipHash});
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        //Read Lines
+        ArrayList<BusLine> buses_md5 = readLinesList("busLinesNew.txt", bl);
 
         ArrayList<ArrayList<int[]>> brokerTopics = new ArrayList<>(bl.size());
         for(Broker b: bl)
@@ -80,58 +62,75 @@ public class Utils
             System.out.println(b.ipHash);
             for(int i = 0; i < buses_md5.size(); i++)
             {
-                if(buses_md5.get(i)[1] < b.ipHash)
+                if(buses_md5.get(i).hashCode < b.ipHash)
                 {
                     b.myTopics.add(buses_md5.get(i));
                     buses_md5.remove(i);
+                    i--;
                 }
             }
         }
         return bl;
     }
 
-    public static ArrayList<Broker> getDumpTopic(ArrayList<Broker> brokers) {
-
-        ArrayList<int[]> buses_md5 = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("busLinesNew.txt")))
+    public static ArrayList<BusLine> readLinesList(String filename, ArrayList<Broker> brokers)
+    {
+        ArrayList<BusLine> importedBusLines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename)))
         {
             String line;
             while ((line = br.readLine()) != null)
             {
                 String[] values = line.split(",");
 
-                buses_md5.add(new int[]{Integer.parseInt(values[0]), values[1].hashCode() % brokers.get(brokers.size()-1).ipHash});
+                BusLine tempLine;
+                if (!brokers.isEmpty()){
+                    tempLine = new BusLine(values[0],values[1],values[2],getMd5(values[1]) % brokers.get(brokers.size()-1).ipHash);
 
-                System.out.println(buses_md5.get(buses_md5.size()-1)[1]);
+                } else {
+                    tempLine = new BusLine(values[1],values[0],values[2],getMd5(values[1]));
+                }
+
+                importedBusLines.add(tempLine);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        int broker1_hash = brokers.get(0).ipHash;
-        int broker2_hash = brokers.get(1).ipHash;
-
-
-        for (int[] bus : buses_md5) {
-
-            if (bus[1] <= broker1_hash)
-            {
-                brokers.get(0).myTopics.add(bus);
-            }
-            else if (bus[1] <= broker2_hash)
-            {
-                brokers.get(1).myTopics.add(bus);
-            }
-            else
-            {
-                brokers.get(2).myTopics.add(bus);
-            }
-
-        }
-
-
-
-        return brokers;
+        return importedBusLines;
     }
 
+    public static void sendPacket(Object b, String ip, int port, String text)
+    {
+        Socket requestSocket = null;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try
+        {
+            requestSocket = new Socket(InetAddress.getByName(ip), port);
+            out = new ObjectOutputStream(requestSocket.getOutputStream());
+            in = new ObjectInputStream(requestSocket.getInputStream());
+
+            out.writeUTF(text);
+            out.flush();
+
+            out.reset();
+            out.writeUnshared(b);
+            out.flush();
+
+        } catch (UnknownHostException unknownHost) {
+            System.err.println("You are trying to connect to an unknown host!");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            try {
+                in.close();
+                out.close();
+                requestSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
 }

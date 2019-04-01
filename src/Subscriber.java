@@ -1,5 +1,3 @@
-import sun.plugin2.message.Conversation;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,7 +17,7 @@ public class Subscriber extends Node
         this.subscriberID = subscriberID;
     }
 
-    public static void register(String ip, int port, int topic, Subscriber s) {
+    public static void register(String ip, int port, String topic, Subscriber s) {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
@@ -34,7 +32,7 @@ public class Subscriber extends Node
             out.flush();
 
             out.reset();
-            out.writeInt(topic);
+            out.writeUTF(topic);
             out.flush();
 
             out.reset();
@@ -47,9 +45,6 @@ public class Subscriber extends Node
             if (returned.equals("bus_is_here"))
             {
                 System.out.println("This broker has your data.");
-
-
-
 
                 System.out.println("Bus position: 0,0");
 
@@ -93,14 +88,10 @@ public class Subscriber extends Node
         }
     }
 
-
-
-
-
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         System.out.print("Enter bus line\n> ");
-        int busLine = in.nextLine().hashCode();
+        String busLine = in.nextLine();
 
         System.out.print("Enter broker's IP\n> ");
         String brokerIP = in.nextLine();
