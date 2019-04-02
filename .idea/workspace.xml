@@ -4,16 +4,10 @@
     <list default="true" id="88d75738-2c57-4a45-9eb7-832a7ac982c4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Broker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Broker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/META-INF/BusFinder.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Node.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Publisher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Publisher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Subscriber.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Subscriber.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Broker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Broker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Bus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BusLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BusLine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Node.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Publisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Publisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subscriber.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -31,35 +25,50 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Publisher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="75" column="9" lean-forward="true" selection-start-line="75" selection-start-column="9" selection-end-line="75" selection-end-column="9" />
+            <state relative-caret-position="34">
+              <caret line="9" column="31" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
               <folding>
-                <element signature="e#1962#1963#0" expanded="true" />
-                <element signature="e#2035#2036#0" expanded="true" />
+                <element signature="method#sendLines#0;class#Publisher#0" />
+                <element signature="method#hashTopic#0;class#Publisher#0" />
+                <element signature="e#2192#2193#0" expanded="true" />
+                <element signature="method#getBrokersList#0;class#Publisher#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Broker.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="362">
+              <caret line="242" column="102" selection-start-line="242" selection-start-column="102" selection-end-line="242" selection-end-column="102" />
+              <folding>
+                <element signature="e#365#1776#0" />
+                <element signature="e#828#1024#1" />
+                <element signature="e#1046#1228#1" />
+                <element signature="e#1274#1444#1" />
+                <element signature="method#Broker#1;class#Broker#0" />
+                <element signature="e#2120#2348#0" />
+                <element signature="e#2354#2585#0" />
+                <element signature="e#3277#4666#1" />
+                <element signature="e#4737#5063#1" />
+                <element signature="e#5136#6560#1" />
+                <element signature="e#6637#6961#1" />
+                <element signature="e#7043#7209#1" />
+                <element signature="e#7283#7590#1" />
+                <element signature="e#8806#9484#1" />
+                <element signature="method#contains_broker#0;class#Broker#0" />
+                <element signature="e#8342#8578#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Broker.java">
+        <entry file="file://$PROJECT_DIR$/src/Bus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="343">
-              <caret line="241" column="89" lean-forward="true" selection-start-line="241" selection-start-column="89" selection-end-line="241" selection-end-column="89" />
-              <folding>
-                <element signature="e#828#1024#1" />
-                <element signature="e#1046#1228#1" />
-                <element signature="e#1274#1444#1" />
-                <element signature="method#Broker#1;class#Broker#0" />
-                <element signature="e#2120#2348#0" />
-                <element signature="e#3277#4666#1" />
-                <element signature="e#4737#5063#1" />
-                <element signature="e#5136#6560#1" />
-                <element signature="e#7043#7209#1" />
-                <element signature="e#7283#7590#1" />
-                <element signature="e#8075#8116#0" />
-                <element signature="e#8342#8578#0" />
-              </folding>
+            <state relative-caret-position="493">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
             </state>
           </provider>
         </entry>
@@ -67,11 +76,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Utils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="226">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="681">
+              <caret line="132" column="45" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
               <folding>
+                <element signature="method#getMd5#0;class#Utils#0" />
+                <element signature="method#getSystemIP#0;class#Utils#0" />
+                <element signature="method#getTopicList#0;class#Utils#0" />
                 <element signature="method#readLinesList#0;class#Utils#0" />
-                <element signature="method#sendPacket#0;class#Utils#0" />
               </folding>
             </state>
           </provider>
@@ -104,9 +115,10 @@
         <option value="$PROJECT_DIR$/src/Subscriber.java" />
         <option value="$PROJECT_DIR$/src/BusLine.java" />
         <option value="$PROJECT_DIR$/src/Node.java" />
-        <option value="$PROJECT_DIR$/src/Publisher.java" />
         <option value="$PROJECT_DIR$/src/Utils.java" />
+        <option value="$PROJECT_DIR$/src/Publisher.java" />
         <option value="$PROJECT_DIR$/src/Broker.java" />
+        <option value="$PROJECT_DIR$/src/Bus.java" />
       </list>
     </option>
   </component>
@@ -146,7 +158,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554237196834" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554247735286" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -172,7 +184,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Publisher">
+  <component name="RunManager" selected="Application.Broker">
     <configuration name="Broker" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Broker" />
       <module name="BusFinder" />
@@ -238,7 +250,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.123667374" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -249,7 +260,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.414791" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.414791" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39978564" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -276,18 +287,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Publisher.java</url>
-          <line>66</line>
-          <properties />
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -366,46 +365,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Publisher.java">
+    <entry file="file://$PROJECT_DIR$/src/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="75" column="9" lean-forward="true" selection-start-line="75" selection-start-column="9" selection-end-line="75" selection-end-column="9" />
+        <state relative-caret-position="681">
+          <caret line="132" column="45" selection-start-line="132" selection-start-column="45" selection-end-line="132" selection-end-column="45" />
           <folding>
-            <element signature="e#1962#1963#0" expanded="true" />
-            <element signature="e#2035#2036#0" expanded="true" />
+            <element signature="method#getMd5#0;class#Utils#0" />
+            <element signature="method#getSystemIP#0;class#Utils#0" />
+            <element signature="method#getTopicList#0;class#Utils#0" />
+            <element signature="method#readLinesList#0;class#Utils#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Utils.java">
+    <entry file="file://$PROJECT_DIR$/src/Publisher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="34">
+          <caret line="9" column="31" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
           <folding>
-            <element signature="method#readLinesList#0;class#Utils#0" />
-            <element signature="method#sendPacket#0;class#Utils#0" />
+            <element signature="method#sendLines#0;class#Publisher#0" />
+            <element signature="method#hashTopic#0;class#Publisher#0" />
+            <element signature="e#2192#2193#0" expanded="true" />
+            <element signature="method#getBrokersList#0;class#Publisher#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Broker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="241" column="89" lean-forward="true" selection-start-line="241" selection-start-column="89" selection-end-line="241" selection-end-column="89" />
+        <state relative-caret-position="362">
+          <caret line="242" column="102" selection-start-line="242" selection-start-column="102" selection-end-line="242" selection-end-column="102" />
           <folding>
+            <element signature="e#365#1776#0" />
             <element signature="e#828#1024#1" />
             <element signature="e#1046#1228#1" />
             <element signature="e#1274#1444#1" />
             <element signature="method#Broker#1;class#Broker#0" />
             <element signature="e#2120#2348#0" />
+            <element signature="e#2354#2585#0" />
             <element signature="e#3277#4666#1" />
             <element signature="e#4737#5063#1" />
             <element signature="e#5136#6560#1" />
+            <element signature="e#6637#6961#1" />
             <element signature="e#7043#7209#1" />
             <element signature="e#7283#7590#1" />
-            <element signature="e#8075#8116#0" />
+            <element signature="e#8806#9484#1" />
+            <element signature="method#contains_broker#0;class#Broker#0" />
             <element signature="e#8342#8578#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Bus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
         </state>
       </provider>
     </entry>

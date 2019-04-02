@@ -31,8 +31,8 @@ public class Broker extends Node
 
         if (this.id == 1)
         {
-            System.out.println("You are initializing the app for the first time.");
-            System.out.println("Use this ip to help other brokers connect: " + Utils.getSystemIP());
+            System.out.println("This Broker 1.");
+            System.out.println("Use this ip to help other brokers connect: " + IP);
         }
         else
         {
@@ -45,7 +45,7 @@ public class Broker extends Node
         {
             if(!gotTopics)
             {
-                System.out.print("Start sharing topics? (y)\n> ");
+                System.out.println("When all Brokers are set press (y) to start sharing topics");
                 ans = in.nextLine();
             }
         }while(!ans.toLowerCase().equals("y"));
@@ -53,6 +53,7 @@ public class Broker extends Node
         if(ans.toLowerCase().equals("y"))
         {
             brokers = Utils.getTopicList(brokers);
+            System.out.println("Topics Calculated. Sending...");
             for (Broker bl : brokers)
             {
                 Utils.sendPacket(bl.myTopics, bl.IP, bl.port, "add_topics_list");
@@ -113,11 +114,12 @@ public class Broker extends Node
                 String sendtext = in.readUTF();
                 if (sendtext.equals("add_me"))
                 {
-                    System.out.println("add me");
                     Broker b2 = (Broker) in.readObject();
+                    System.out.println("Broker " + b2.id + " with IP " + b2.IP + " is trying to connect.");
                     if(!contains_broker(b2))
                     {
-                        for(int i = 0; i < brokers.size(); i++)
+                        int i;
+                        for(i = 0; i < brokers.size(); i++)
                         {
                             if(b2.ipHash < brokers.get(i).ipHash)
                             {
@@ -130,10 +132,13 @@ public class Broker extends Node
                                 break;
                             }
                         }
+                        System.out.println("It was placed at position " + i + " (Hash: " + b2.ipHash + ")");
+                        System.out.println("Our Broker's IP list: ");
                         for(Broker test: brokers)
                         {
                             System.out.println(test.IP);
                         }
+                        System.out.println("Updating other Broker's list");
                         for (Broker b : brokers)
                         {
                             if (b.IP != this.IP)
@@ -142,14 +147,16 @@ public class Broker extends Node
                             }
                         }
                     }
-                    else{
-                        System.err.println("Brokers already exists");
+                    else {
+                        System.err.println("Broker already exists");
                     }
                 }
                 else if (sendtext.equals("add_list"))
                 {
+                    System.out.println("Got a request to update my Broker list");
                     ArrayList<Broker> bl = (ArrayList<Broker>) in.readObject();
                     brokers = bl;
+                    System.out.println("My new Broker list is:");
                     for (Broker b : brokers)
                     {
                         System.out.println(b.IP);
@@ -195,7 +202,7 @@ public class Broker extends Node
                 }
                 else if(sendtext.equals("add_topics_list"))
                 {
-                    System.out.println("Got Topics");
+                    System.out.println("Got Topics\nMy new topics are:");
                     gotTopics = true;
                     myTopics = (ArrayList<BusLine>) in.readObject();
                     for(BusLine s : myTopics)
@@ -224,26 +231,41 @@ public class Broker extends Node
                 else if(sendtext.equals("broker_down"))
                 {
                     Broker b = (Broker) in.readObject();
+                    System.out.println("Publisher " + requestSocket.getLocalSocketAddress() + " just informed me that Broker " + b.id + " is down");
 
                     for (int i = 0; i < brokers.size(); i++)
                     {
                         if (brokers.get(i).id == b.id)
                         {
-                            System.out.println("Broker " + b.id + " is down!");
+                            System.out.println("I didn't know that! Removing..");
                             brokers.remove(i);
+
+                            System.out.println("Recalculating topics and updating the other Brokers...");
+                            brokers = Utils.getTopicList(brokers);
+                            for(Broker br: brokers)
+                            {
+                                if(!br.IP.equals(IP))
+                                {
+                                    Utils.sendPacket(brokers, br.IP, br.port, "add_list");
+                                    Utils.sendPacket(br.myTopics, br.IP, br.port, "add_topics_list");
+                                }
+                                else
+                                {
+                                    System.out.println("Updating my self");
+                                    myTopics = br.myTopics;
+                                    for(BusLine bsl: myTopics)
+                                    {
+                                        System.out.println(bsl.lineID);
+                                    }
+                                }
+                            }
+                            out.reset();
+                            out.writeUnshared(brokers);
+                            out.flush();
+
                             break;
                         }
                     }
-                    brokers = Utils.getTopicList(brokers);
-                    for(Broker br: brokers)
-                    {
-                        System.out.println(br.id + " " + br.IP);
-                        Utils.sendPacket(brokers, br.IP, br.port, "add_list");
-                        Utils.sendPacket(br.myTopics, br.IP, br.port, "add_topics_list");
-                    }
-                    out.reset();
-                    out.writeUnshared(brokers);
-                    out.flush();
                 }
                 in.close();
                 out.close();
@@ -261,12 +283,6 @@ public class Broker extends Node
                 ioException.printStackTrace();
             }
         }
-    }
-
-    public void pull(int topic)
-    {
-
-
     }
 
     public boolean contains_broker(Broker bin){

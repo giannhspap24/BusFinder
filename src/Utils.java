@@ -53,10 +53,9 @@ public class Utils
         //Read Lines
         ArrayList<BusLine> buses_md5 = readLinesList("busLinesNew.txt", bl);
 
-        ArrayList<ArrayList<int[]>> brokerTopics = new ArrayList<>(bl.size());
         for(Broker b: bl)
         {
-            brokerTopics.add(new ArrayList<>());
+            b.myTopics.clear();
             for(int i = 0; i < buses_md5.size(); i++)
             {
                 if(buses_md5.get(i).hashCode < b.ipHash)
@@ -98,7 +97,7 @@ public class Utils
         return importedBusLines;
     }
 
-    public static ObjectInputStream sendPacket(Object b, String ip, int port, String text)
+    public static void sendPacket(Object b, String ip, int port, String text)
     {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
@@ -116,11 +115,47 @@ public class Utils
             out.writeUnshared(b);
             out.flush();
 
-            return in;
         } catch (ConnectException unknownHost) {
 
         } catch (IOException ioException) {
             ioException.printStackTrace();
+        } finally {
+            try {
+                in.close();
+                out.close();
+                requestSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
+    public static Object sendPacketWithAnswer(Object b, String ip, int port, String text)
+    {
+        Socket requestSocket = null;
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try
+        {
+            requestSocket = new Socket(InetAddress.getByName(ip), port);
+            out = new ObjectOutputStream(requestSocket.getOutputStream());
+            in = new ObjectInputStream(requestSocket.getInputStream());
+
+            out.writeUTF(text);
+            out.flush();
+
+            out.reset();
+            out.writeUnshared(b);
+            out.flush();
+
+            return in.readObject();
+
+        } catch (ConnectException unknownHost) {
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } finally {
             try {
                 in.close();

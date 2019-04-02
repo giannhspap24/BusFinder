@@ -25,6 +25,7 @@ public class Publisher extends Node
         in.nextLine();
 
         brokers = getBrokersList(broker1_ip,broker1_port);
+        System.out.println("Got Broker list");
 
         sendLines();
         sendTimes();
@@ -39,8 +40,6 @@ public class Publisher extends Node
     {
         ArrayList<BusLine> busLines = Utils.readLinesList("busLinesNew.txt", brokers);
 
-        ArrayList<String> publishers_count = new ArrayList<>();
-
         System.out.print("Enter number of publishers\n> ");
         int c = in.nextInt();
         in.nextLine();
@@ -54,6 +53,11 @@ public class Publisher extends Node
         else
         {
             lines = busLines.subList(idNorm * step, (idNorm + 1) * step);
+        }
+        System.out.println("Just calculated my topic list:");
+        for(BusLine l: lines)
+        {
+            System.out.println(l.lineID);
         }
     }
 
@@ -86,6 +90,7 @@ public class Publisher extends Node
     public void sendTimes() {
         try (BufferedReader br = new BufferedReader(new FileReader("busPositionsNew.txt"))){
             String line;
+            System.out.println("Start sending topics to respective Brokers...");
             while ((line = br.readLine()) != null)
             {
                 String[] values = line.split(",");
@@ -102,7 +107,7 @@ public class Publisher extends Node
                     }
                 }catch (NullPointerException ex)
                 {
-                    System.out.println("Not Found");
+                    System.out.println("CANNOT CONNECT TO BROKER " + b.id + "\nRemoving it from my list..");
                     for (int i = 0; i < brokers.size(); i++)
                     {
                         if (brokers.get(i).id == b.id)
@@ -111,7 +116,8 @@ public class Publisher extends Node
                             break;
                         }
                     }
-                    Utils.sendPacket(b, brokers.get(0).IP, brokers.get(0).port, "broker_down");
+                    System.out.println("Informing broker " + brokers.get(0).id + " that this broker is down and requesting an updated version of Broker list...");
+                    brokers = (ArrayList<Broker>)Utils.sendPacketWithAnswer(b, brokers.get(0).IP, brokers.get(0).port, "broker_down");
                 }
             }
         }catch (IOException e) {
@@ -134,6 +140,8 @@ public class Publisher extends Node
 
             out.writeUTF("give_me_brokers_list");
             out.flush();
+
+            System.out.println("Connection with Broker established");
 
             return (ArrayList<Broker>) in.readObject();
 
