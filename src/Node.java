@@ -3,9 +3,15 @@ import java.util.ArrayList;
 
 public class Node extends Thread implements Serializable
 {
-    public ArrayList<Broker> brokers;
+    public volatile static ArrayList<Broker> brokers;
 
-    public Node() {
+    public Node()
+    {
         this.brokers = new ArrayList<>();
+    }
+
+    public Node(boolean init)
+    {
+
     }
 }

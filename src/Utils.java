@@ -1,11 +1,9 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Utils
 {
@@ -59,7 +57,6 @@ public class Utils
         for(Broker b: bl)
         {
             brokerTopics.add(new ArrayList<>());
-            System.out.println(b.ipHash);
             for(int i = 0; i < buses_md5.size(); i++)
             {
                 if(buses_md5.get(i).hashCode < b.ipHash)
@@ -101,7 +98,7 @@ public class Utils
         return importedBusLines;
     }
 
-    public static void sendPacket(Object b, String ip, int port, String text)
+    public static ObjectInputStream sendPacket(Object b, String ip, int port, String text)
     {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
@@ -119,8 +116,9 @@ public class Utils
             out.writeUnshared(b);
             out.flush();
 
-        } catch (UnknownHostException unknownHost) {
-            System.err.println("You are trying to connect to an unknown host!");
+            return in;
+        } catch (ConnectException unknownHost) {
+
         } catch (IOException ioException) {
             ioException.printStackTrace();
         } finally {
@@ -132,5 +130,6 @@ public class Utils
                 ioException.printStackTrace();
             }
         }
+        return null;
     }
 }

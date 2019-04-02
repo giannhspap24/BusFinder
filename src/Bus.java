@@ -1,20 +1,13 @@
-public class Bus {
-    String lineNumber, routeCode, vehicleId, lineName, busLineId, info, timeStamp;
+import java.io.Serializable;
+
+public class Bus  implements Serializable {
+    String routeCode, vehicleId,  LineCode, timeStamp;
     double lat, lon;
 
-    public Bus(String lineNumber, String routeCode, String vehicleId, String lineName, String busLineId, String info, double lat, double lon) {
-        this.lineNumber = lineNumber;
-        this.routeCode = routeCode;
-        this.vehicleId = vehicleId;
-        this.lineName = lineName;
-        this.busLineId = busLineId;
-        this.info = info;
-        this.lat = lat;
-        this.lon = lon;
-    }
 
-    public Bus(String busLineId, String routeCode, String vehicleId, double lat, double lon, String timeStamp) {
-        this.busLineId = busLineId;
+
+    public Bus(String LineCode, String routeCode, String vehicleId, double lat, double lon, String timeStamp) {
+        this.LineCode = LineCode;
         this.routeCode = routeCode;
         this.vehicleId = vehicleId;
         this.lat = lat;
@@ -23,4 +16,15 @@ public class Bus {
 
     }
 
+    @Override
+    public String toString() {
+        return "Bus{" +
+                "routeCode='" + routeCode + '\'' +
+                ", vehicleId='" + vehicleId + '\'' +
+                ", LineCode='" + LineCode + '\'' +
+                ", timeStamp='" + timeStamp + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
+    }
 }

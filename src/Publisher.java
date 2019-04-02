@@ -17,28 +17,17 @@ public class Publisher extends Node
 
     public Publisher(int id)
     {
-
         this.id = id;
-        System.out.print("Enter Broker 1 IP\n>");
+        System.out.print("Enter a Broker's IP\n>");
         broker1_ip = in.nextLine();
-        System.out.print("Enter Broker 1 port\n>");
+        System.out.print("Enter Broker port\n>");
         broker1_port = in.nextInt();
         in.nextLine();
 
-
         brokers = getBrokersList(broker1_ip,broker1_port);
-
-        //new Publisher(this).start();
 
         sendLines();
         sendTimes();
-
-    }
-
-    public Publisher(Publisher p)
-    {
-        this.id = p.id;
-
     }
 
     public static void main(String[] args)
@@ -46,48 +35,8 @@ public class Publisher extends Node
         new Publisher(Integer.parseInt(args[0]));
     }
 
-    //Parallel Server
-    public void run()
+    public void sendLines()
     {
-        ServerSocket providerSocket = null;
-        Socket connection = null;
-        try
-        {
-            providerSocket = new ServerSocket(8080);
-            while (true)
-            {
-                connection = providerSocket.accept();
-                ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(connection.getInputStream());
-
-                String sendtext = in.readUTF();
-                if (sendtext.equals("add_lines"))
-                {
-                    lines = (ArrayList<BusLine>) in.readObject();
-                    join();
-                }
-
-                in.close();
-                out.close();
-                connection.close();
-            }
-
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            System.out.println("Server closed");
-        } finally {
-            try {
-                providerSocket.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }
-    }
-
-    public void sendLines() {
         ArrayList<BusLine> busLines = Utils.readLinesList("busLinesNew.txt", brokers);
 
         ArrayList<String> publishers_count = new ArrayList<>();
@@ -108,10 +57,12 @@ public class Publisher extends Node
         }
     }
 
-    public Broker hashTopic(String busLID) {
+    public Broker hashTopic(String busLID)
+    {
+        if (brokers.size() ==0) return null;
         for (BusLine busL: lines)
         {
-            if (busLID.equals(busL.lineID))
+            if (busLID.equals(busL.lineCode))
             {
                 for (Broker b : brokers)
                 {
@@ -121,6 +72,7 @@ public class Publisher extends Node
                     }
                 }
             }
+//            break;
         }
 
         return null;
@@ -128,7 +80,7 @@ public class Publisher extends Node
 
     public void push(Bus leoforeio, Broker b)
     {
-        Utils.sendPacket(leoforeio,b.IP,b.port,"update_times");
+        Utils.sendPacket(leoforeio, b.IP, b.port, "update_times");
     }
 
     public void sendTimes() {
@@ -138,15 +90,30 @@ public class Publisher extends Node
             {
                 String[] values = line.split(",");
                 Broker b = hashTopic(values[0]);
-
-                if (b != null) {
-                    Bus tempLine = new Bus(values[0], values[1], values[2], Double.parseDouble(values[3]), Double.parseDouble(values[4]), values[5]);
-                    push(tempLine, b);
-                    sleep(1000);
+                try
+                {
+                    if (b != null)
+                    {
+                        System.out.println(b.IP);
+                        Bus tempLine = new Bus(values[0], values[1], values[2], Double.parseDouble(values[3]), Double.parseDouble(values[4]), values[5]);
+                        System.out.println(tempLine.toString()+ " sent to " +b.toString());
+                        push(tempLine, b);
+                        sleep(1000);
+                    }
+                }catch (NullPointerException ex)
+                {
+                    System.out.println("Not Found");
+                    for (int i = 0; i < brokers.size(); i++)
+                    {
+                        if (brokers.get(i).id == b.id)
+                        {
+                            brokers.remove(i);
+                            break;
+                        }
+                    }
+                    Utils.sendPacket(b, brokers.get(0).IP, brokers.get(0).port, "broker_down");
                 }
-
             }
-
         }catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -154,7 +121,7 @@ public class Publisher extends Node
         }
     }
 
-    public ArrayList<Broker> getBrokersList(String ip,int port)
+    public ArrayList<Broker> getBrokersList(String ip, int port)
     {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
@@ -185,9 +152,7 @@ public class Publisher extends Node
                 ioException.printStackTrace();
             }
         }
-
         return null;
-
     }
 
 }

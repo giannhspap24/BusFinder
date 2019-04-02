@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -46,8 +45,17 @@ public class Subscriber extends Node
             {
                 System.out.println("This broker has your data.");
 
-                System.out.println("Bus position: 0,0");
+                ArrayList<Bus> ret = (ArrayList<Bus>) in.readObject();
 
+                System.out.println("Bus Line " + topic +" details:");
+                for (Bus b : ret)
+                {
+                    System.out.println("|-----------------------|\n" +
+                            "Route Code: " + b.routeCode + "\n" +
+                            "Vehicle ID: " + b.vehicleId + "\n" +
+                            "Latitute: " + b.lat + "\n" +
+                            "Lontitute: " + b.lon);
+                }
                 return;
             }
             else if (returned.equals("bus_not_here"))
@@ -65,9 +73,6 @@ public class Subscriber extends Node
                     }
                 }
                 System.out.println("Line not found");
-
-
-
 
                 return;
             }
@@ -90,20 +95,25 @@ public class Subscriber extends Node
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Enter bus line\n> ");
-        String busLine = in.nextLine();
 
         System.out.print("Enter broker's IP\n> ");
         String brokerIP = in.nextLine();
 
         System.out.print("Enter broker's port\n> ");
         int brokerPort = in.nextInt();
+        in.nextLine();
 
-
+        String busLine = "";
         Subscriber s = new Subscriber(args[0]);
-        register(brokerIP,brokerPort,busLine, s);
 
+        System.out.print("Enter bus line\n> ");
+        busLine = in.nextLine();
 
+        while (!busLine.toLowerCase().equals("stop")) {
+            register(brokerIP, brokerPort, busLine, s);
+            System.out.print("Enter bus line\n> ");
+            busLine = in.nextLine();
+        }
 
     }
 }
