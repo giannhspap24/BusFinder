@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="88d75738-2c57-4a45-9eb7-832a7ac982c4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Broker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Broker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Publisher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Publisher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/BusFinder/Subscriber.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BusFinder/Subscriber.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Broker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Broker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Bus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Bus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/BusLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/BusLine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Publisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Publisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Subscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utils.java" afterDir="false" />
-    </list>
+    <list default="true" id="88d75738-2c57-4a45-9eb7-832a7ac982c4" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,42 +14,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Broker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="566">
-              <caret line="287" column="32" lean-forward="true" selection-start-line="287" selection-start-column="32" selection-end-line="287" selection-end-column="32" />
+            <state relative-caret-position="544">
+              <caret line="107" column="4" selection-start-line="107" selection-start-column="4" selection-end-line="107" selection-end-column="4" />
               <folding>
                 <element signature="method#Broker#0;class#Broker#0" />
                 <element signature="method#Broker#1;class#Broker#0" />
                 <element signature="method#containsTopic#0;class#Broker#0" />
                 <element signature="method#containsLineCode#0;class#Broker#0" />
                 <element signature="method#containsSubId#0;class#Broker#0" />
+                <element signature="method#run#0;class#Broker#0" />
                 <element signature="e#3506#5174#1" />
                 <element signature="e#5245#5665#1" />
-                <element signature="e#5738#6818#1" />
-                <element signature="e#6895#7239#1" />
-                <element signature="e#7321#7487#1" />
-                <element signature="e#7561#8023#1" />
-                <element signature="e#8096#9865#1" />
+                <element signature="e#5738#6908#1" />
+                <element signature="e#6985#7329#1" />
+                <element signature="e#7411#7577#1" />
+                <element signature="e#7651#8111#1" />
+                <element signature="e#8184#9953#1" />
+                <element signature="e#10024#10715#1" />
+                <element signature="method#removeFromRegistered#0;class#Broker#0" />
+                <element signature="method#push#0;class#Broker#0" />
                 <element signature="method#contains_broker#0;class#Broker#0" />
                 <element signature="method#toString#0;class#Broker#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Subscriber.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="71" selection-start-line="71" selection-end-line="72" />
-              <folding>
-                <element signature="method#visualizeData#0;class#Subscriber#0" />
-                <element signature="e#3743#3744#0" expanded="true" />
-                <element signature="e#3801#3802#0" expanded="true" />
-                <element signature="e#3851#3852#0" expanded="true" />
-                <element signature="e#3890#3891#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,7 +81,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="133" />
     <option name="y" value="85" />
     <option name="width" value="1219" />
@@ -141,18 +118,18 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554561855569" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554562029109" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\Libraries\Documents\AUEB\Εξάμηνο 6\Κατανεμημένα\Project Mathimatos\BusFinder" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\Libraries\Documents\AUEB\Εξάμηνο 6\Κατανεμημένα\Project Mathimatos\BusFinder\src" />
       <recent name="D:\Arxeio Panepistimiou\6-2018-2019\Katanemimena Systhmata\BusFinder\src" />
       <recent name="D:\Arxeio Panepistimiou\6-2018-2019\Katanemimena Systhmata\BusFinder" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="F:\Libraries\Documents\AUEB\Εξάμηνο 6\Κατανεμημένα\Project Mathimatos\BusFinder" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -242,10 +219,9 @@
     <option name="totallyTimeSpent" value="11846000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="true" />
+    <frame x="133" y="85" width="1219" height="891" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12579957" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20534945" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -336,35 +312,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/EchoThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="7" column="41" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#99#100#0" expanded="true" />
-            <element signature="e#141#142#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestServer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="22" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TestClient.java" />
+    <entry file="file://$PROJECT_DIR$/src/EchoThread.java" />
+    <entry file="file://$PROJECT_DIR$/src/TestServer.java" />
     <entry file="file://$PROJECT_DIR$/src/Publisher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -418,29 +368,6 @@
     <entry file="file://$PROJECT_DIR$/ΒusLinesDescription.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Broker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="566">
-          <caret line="287" column="32" lean-forward="true" selection-start-line="287" selection-start-column="32" selection-end-line="287" selection-end-column="32" />
-          <folding>
-            <element signature="method#Broker#0;class#Broker#0" />
-            <element signature="method#Broker#1;class#Broker#0" />
-            <element signature="method#containsTopic#0;class#Broker#0" />
-            <element signature="method#containsLineCode#0;class#Broker#0" />
-            <element signature="method#containsSubId#0;class#Broker#0" />
-            <element signature="e#3506#5174#1" />
-            <element signature="e#5245#5665#1" />
-            <element signature="e#5738#6818#1" />
-            <element signature="e#6895#7239#1" />
-            <element signature="e#7321#7487#1" />
-            <element signature="e#7561#8023#1" />
-            <element signature="e#8096#9865#1" />
-            <element signature="method#contains_broker#0;class#Broker#0" />
-            <element signature="method#toString#0;class#Broker#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Subscriber.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
@@ -451,6 +378,33 @@
             <element signature="e#3801#3802#0" expanded="true" />
             <element signature="e#3851#3852#0" expanded="true" />
             <element signature="e#3890#3891#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Broker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="107" column="4" selection-start-line="107" selection-start-column="4" selection-end-line="107" selection-end-column="4" />
+          <folding>
+            <element signature="method#Broker#0;class#Broker#0" />
+            <element signature="method#Broker#1;class#Broker#0" />
+            <element signature="method#containsTopic#0;class#Broker#0" />
+            <element signature="method#containsLineCode#0;class#Broker#0" />
+            <element signature="method#containsSubId#0;class#Broker#0" />
+            <element signature="method#run#0;class#Broker#0" />
+            <element signature="e#3506#5174#1" />
+            <element signature="e#5245#5665#1" />
+            <element signature="e#5738#6908#1" />
+            <element signature="e#6985#7329#1" />
+            <element signature="e#7411#7577#1" />
+            <element signature="e#7651#8111#1" />
+            <element signature="e#8184#9953#1" />
+            <element signature="e#10024#10715#1" />
+            <element signature="method#removeFromRegistered#0;class#Broker#0" />
+            <element signature="method#push#0;class#Broker#0" />
+            <element signature="method#contains_broker#0;class#Broker#0" />
+            <element signature="method#toString#0;class#Broker#0" />
           </folding>
         </state>
       </provider>
