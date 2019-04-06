@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -8,7 +9,8 @@ public class BusLine implements Serializable
     public ArrayList<Bus> runningBuses;
 
 
-    public BusLine(String lineCode, String lineID, String description, int hashCode) {
+    public BusLine(String lineCode, String lineID, String description, int hashCode)
+    {
         this.lineID = lineID;
         this.lineCode = lineCode;
         this.description = description;
@@ -25,15 +27,22 @@ public class BusLine implements Serializable
                 tempBus.timeStamp = b.timeStamp;
                 flag = false;
 
-                //System.out.println(this.toString() + " updated bus " + b.toString());
                 break;
             }
         }
         if (flag) {
             runningBuses.add(b);
-            //System.out.println(this.toString() + " added bus " + b.toString());
 
         }
+    }
+
+    public String getVehiclesId() {
+        String ret = "[";
+        for (Bus b : runningBuses) {
+            ret = ret + " " + b.vehicleId;
+        }
+        ret = ret + "]";
+        return ret;
     }
 
     @Override
@@ -43,7 +52,7 @@ public class BusLine implements Serializable
                 ", lineCode='" + lineCode + '\'' +
                 ", description='" + description + '\'' +
                 ", hashCode=" + hashCode +
-                ", runningBuses=" + runningBuses +
+                ", runningBuses= " + getVehiclesId() +
                 '}';
     }
 }

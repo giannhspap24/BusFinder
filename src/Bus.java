@@ -15,15 +15,13 @@ public class Bus  implements Serializable
         this.timeStamp = timeStamp;
     }
 
+
     @Override
     public String toString()
     {
-        return "Bus{" +
-                "routeCode='" + routeCode + '\'' +
-                ", vehicleId='" + vehicleId + '\'' +
-                ", LineCode='" + LineCode + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                '}';
+        return "Route Code: " + routeCode + "\n" +
+                "Vehicle ID: " + vehicleId + "\n" +
+                "Latitute: " + lat + "\n" +
+                "Lontitute: " + lon;
     }
 }

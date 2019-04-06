@@ -1,4 +1,3 @@
-import javax.rmi.CORBA.Util;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -8,10 +7,9 @@ public class Broker extends Node
 {
     public String IP;
     public int ipHash, id, port;
-    public ArrayList<Subscriber> registeredSubs;
+    public volatile static ArrayList<Subscriber> registeredSubs;
     public ArrayList<Publisher> registeredPubs;
-    public ArrayList<BusLine> myTopics;
-
+    public volatile ArrayList<BusLine> myTopics;
 
     private boolean gotTopics = false;
 
@@ -70,18 +68,16 @@ public class Broker extends Node
         this.IP = b.IP;
         this.port = b.port;
         this.id = b.id;
-        this.registeredSubs = b.registeredSubs;
         this.registeredPubs = b.registeredPubs;
-        this.myTopics = b.myTopics;
     }
 
-    public boolean containsTopic(String topic)
+    public BusLine containsTopic(String topic)
     {
-        if (myTopics.size() == 0) return false;
+        if (myTopics.size() == 0) return null;
         for (BusLine top : myTopics) {
-            if (top.lineID.equals(topic)) return true;
+            if (top.lineID.equals(topic)) return top;
         }
-        return false;
+        return null;
     }
 
     public boolean containsLineCode(String code)
@@ -89,6 +85,15 @@ public class Broker extends Node
         if (myTopics.size() == 0) return false;
         for (BusLine top : myTopics) {
             if (top.lineCode.equals(code)) return true;
+        }
+        return false;
+    }
+
+    public boolean containsSubId(String subID) {
+        for (Subscriber s : registeredSubs) {
+            if (s.subscriberID.equals(subID)){
+                return true;
+            }
         }
         return false;
     }
@@ -108,8 +113,8 @@ public class Broker extends Node
             while (true)
             {
                 Socket requestSocket = providerSocket.accept();
-                ObjectOutputStream out = new ObjectOutputStream(requestSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(requestSocket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(requestSocket.getOutputStream());
 
                 String sendtext = in.readUTF();
                 if (sendtext.equals("add_me"))
@@ -164,29 +169,28 @@ public class Broker extends Node
                 }
                 else if (sendtext.equals("i_want_bus"))
                 {
-                    String topic =  in.readUTF();
                     Subscriber s = (Subscriber) in.readObject();
+                    BusLine top = containsTopic(s.topic);
 
-                    if (containsTopic(topic))
+                    if (top != null)
                     {
-                        if(registeredSubs.isEmpty() || !registeredSubs.contains(s))
+                        if(registeredSubs.isEmpty() || !containsSubId(s.subscriberID))
                         {
+                            s.brokerOut = out;
                             registeredSubs.add(s);
+                            System.out.println("Subscriber " + s.subscriberID + " registered");
                         }
-//                        for (Subscriber rb : registeredSubs) {
-//                            System.out.println(rb.subscriberID);
-//                        }
                         out.reset();
                         out.writeUTF("bus_is_here");
                         out.flush();
 
-                        for (BusLine busL : myTopics) {
-                            if (busL.lineID.equals(topic)) {
-                                out.reset();
-                                out.writeUnshared(busL.runningBuses);
-                                System.out.println("Sent " + busL.toString() + "Subcriber " + s.subscriberID);
-                            }
-                        }
+
+
+                        out.reset();
+                        out.writeUnshared(this);
+                        out.flush();
+
+                        push(top);
                     }
                     else
                     {
@@ -197,7 +201,6 @@ public class Broker extends Node
                         out.reset();
                         out.writeUnshared(brokers);
                         out.flush();
-
                     }
                 }
                 else if(sendtext.equals("add_topics_list"))
@@ -220,13 +223,16 @@ public class Broker extends Node
                 else if(sendtext.equals("update_times"))
                 {
                     Bus leoforeio = (Bus) in.readObject();
-                    for (BusLine busL : myTopics) {
-                        if (busL.lineCode.equals(leoforeio.LineCode)) {
+                    BusLine top = null;
+                    for (BusLine busL : myTopics)
+                    {
+                        if (busL.lineCode.equals(leoforeio.LineCode))
+                        {
+                            top = busL;
                             busL.updateBus(leoforeio);
-
                         }
                     }
-
+                    push(top);
                 }
                 else if(sendtext.equals("broker_down"))
                 {
@@ -259,17 +265,29 @@ public class Broker extends Node
                                     }
                                 }
                             }
-                            out.reset();
-                            out.writeUnshared(brokers);
-                            out.flush();
-
                             break;
                         }
                     }
+                    out.reset();
+                    out.writeUnshared(brokers);
+                    out.flush();
                 }
-                in.close();
-                out.close();
-                requestSocket.close();
+                else if(sendtext.equals("remove_me"))
+                {
+                    Subscriber s = (Subscriber) in.readObject();
+                    for (int i=0; i<registeredSubs.size(); i++) {
+                        if (s.subscriberID.equals(registeredSubs.get(i).subscriberID)) {
+                            registeredSubs.get(i).brokerOut.writeUnshared("proceed");
+                            try {
+
+                                registeredSubs.get(i).brokerOut.close();
+                            } catch (IOException ioException){
+                                ioException.printStackTrace();
+                            }
+                            registeredSubs.remove(i);
+                        }
+                    }
+                }
             }
 
         } catch (IOException ioException) {
@@ -285,7 +303,48 @@ public class Broker extends Node
         }
     }
 
-    public boolean contains_broker(Broker bin){
+    public void removeFromRegistered(Subscriber s) {
+
+        for (int i=0; i<registeredSubs.size(); i++) {
+            if (registeredSubs.get(i).subscriberID.equals(s.subscriberID)) {
+                try {
+
+                    registeredSubs.get(i).brokerOut.close();
+                } catch (IOException ioException){
+                    System.out.println("Subscriber " + registeredSubs.get(i).subscriberID + " connection closed");
+                }
+                registeredSubs.remove(i);
+                System.out.println("Subscriber " + s.subscriberID + " unregistered");
+            }
+        }
+
+    }
+
+    public void push(BusLine top)
+    {
+        for(Subscriber s: registeredSubs)
+        {
+            if (top.lineID.equals(s.topic)) {
+                try {
+
+
+                    s.brokerOut.reset();
+                    s.brokerOut.writeUnshared(top.runningBuses);
+                    s.brokerOut.flush();
+                    System.out.println("Sent " + top.lineID + " to Subcriber " + s.subscriberID);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+
+                    removeFromRegistered(s);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    public boolean contains_broker(Broker bin)
+    {
         for(Broker b:brokers)
         {
             if(b.IP.equals(bin.IP))

@@ -130,8 +130,7 @@ public class Utils
         }
     }
 
-    public static Object sendPacketWithAnswer(Object b, String ip, int port, String text)
-    {
+    public static Object sendPacketWithAnswer(Object b, String ip, int port, String text) {
         Socket requestSocket = null;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
@@ -150,10 +149,12 @@ public class Utils
 
             return in.readObject();
 
-        } catch (ConnectException unknownHost) {
-
         } catch (IOException ioException) {
-            ioException.printStackTrace();
+            try {
+                return in.readUTF();
+            } catch (IOException e) {
+                return null;
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {

@@ -76,7 +76,6 @@ public class Publisher extends Node
                     }
                 }
             }
-//            break;
         }
 
         return null;
@@ -103,7 +102,7 @@ public class Publisher extends Node
                         Bus tempLine = new Bus(values[0], values[1], values[2], Double.parseDouble(values[3]), Double.parseDouble(values[4]), values[5]);
                         System.out.println(tempLine.toString()+ " sent to " +b.toString());
                         push(tempLine, b);
-                        sleep(1000);
+                        sleep(200);
                     }
                 }catch (NullPointerException ex)
                 {
@@ -117,7 +116,7 @@ public class Publisher extends Node
                         }
                     }
                     System.out.println("Informing broker " + brokers.get(0).id + " that this broker is down and requesting an updated version of Broker list...");
-                    brokers = (ArrayList<Broker>)Utils.sendPacketWithAnswer(b, brokers.get(0).IP, brokers.get(0).port, "broker_down");
+                    brokers = (ArrayList<Broker>) Utils.sendPacketWithAnswer(b, brokers.get(0).IP, brokers.get(0).port, "broker_down");
                 }
             }
         }catch (IOException e) {
