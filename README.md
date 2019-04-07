@@ -16,6 +16,7 @@
 * In addition before the publisher can start sending topics to the respective Broker, need to know (prompts the user) the IP and port of any Broker in our network.
 * Once all the information have been provided the publisher will begin sending topics to the respective Broker every 0.2 seconds, reading from the file *BusPositions.txt*.
 
+
 ## Subscriber class
 * Same as the publisher before it begins it need to know the IP and the port of any of the Brokers.
 * Once the information is provider it prompts the user for the line they want to get information about. It then contacts the Broker provided above. Should this Broker not have the information the user needs it will then return a list of all other Broker and the Subscriber will have to ask all of them until it finds the one, which is responsible for the topic.
